@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>爪爪聊 - 听见毛孩子的心声 | AI宠物聊天</title>
+  <meta name="description" content="爪爪聊用AI为你的宠物创造独一无二的灵魂与性格，让你随时随地听见毛孩子的心声。支持猫咪、狗狗等多种宠物。" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
+  <style>
+    /* ===== Design Tokens ===== */
+    :root {
+      --color-primary: #FF6B6B;
+      --color-primary-light: #FF8E8E;
+      --color-primary-dark: #E85555;
+      --color-accent: #FFB347;
+      --color-accent-light: #FFCC80;
+      --color-warm-bg: #FFF9F5;
+      --color-cream: #FFF5EE;
+      --color-lavender: #F0E6FF;
+      --color-lavender-deep: #C9A8FF;
+      --color-mint: #E8F8F0;
+      --color-mint-deep: #7ECDA0;
+      --color-peach: #FFE8DC;
+      --color-text-primary: #2D2D2D;
+      --color-text-secondary: #6B6B6B;
+      --color-text-muted: #9B9B9B;
+      --color-border: #F0E8E2;
+      --color-white: #FFFFFF;
+
+      --shadow-soft: 0 4px 20px rgba(255, 107, 107, 0.08);
+      --shadow-card: 0 8px 32px rgba(255, 107, 107, 0.1);
+      --shadow-hover: 0 12px 40px rgba(255, 107, 107, 0.18);
+
+      --gradient-hero: linear-gradient(160deg, #FFF9F5 0%, #FFE8DC 40%, #F0E6FF 100%);
+      --gradient-primary: linear-gradient(135deg, #FF6B6B, #FFB347);
+      --gradient-card-1: linear-gradient(145deg, #FFF5EE, #FFE8DC);
+      --gradient-card-2: linear-gradient(145deg, #E8F8F0, #D4F1E0);
+      --gradient-card-3: linear-gradient(145deg, #FFF0E0, #FFE0C0);
+      --gradient-card-4: linear-gradient(145deg, #F0E6FF, #E0D4FF);
+
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+      --radius-full: 9999px;
+
+      --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+
+      --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-bounce: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--font-family);
+      color: var(--color-text-primary);
+      background: var(--color-white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    a {
+      color: var(--color-primary);
+      text-decoration: none;
+      transition: var(--transition-base);
+    }
+
+    a:hover {
+      color: var(--color-primary-dark);
+    }
+
+    /* ===== Utility ===== */
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-subtitle {
+      font-size: 1.1rem;
+      color: var(--color-text-secondary);
+      text-align: center;
+      margin-bottom: 56px;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ===== Navigation ===== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--color-border);
+      transition: var(--transition-base);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+    }
+
+    .nav-logo span {
+      font-size: 1.5rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--color-text-secondary);
+      font-size: 0.95rem;
+      font-weight: 500;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gradient-primary);
+      border-radius: 1px;
+      transition: var(--transition-base);
+    }
+
+    .nav-links a:hover {
+      color: var(--color-primary);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    /* Mobile menu */
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .nav-toggle svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--color-text-primary);
+    }
+
+    /* ===== Hero ===== */
+    .hero {
+      padding: 120px 0 80px;
+      background: var(--gradient-hero);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -200px;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 179, 71, 0.15) 0%, transparent 70%);
+    }
+
+    .hero-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .hero-text {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      background: var(--color-white);
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      color: var(--color-primary);
+      font-weight: 600;
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: 3.2rem;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 .highlight {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-desc {
+      font-size: 1.15rem;
+      color: var(--color-text-secondary);
+      line-height: 1.8;
+      margin-bottom: 36px;
+      max-width: 440px;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: var(--gradient-primary);
+      color: var(--color-white);
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(255, 107, 107, 0.3);
+      transition: var(--transition-bounce);
+    }
+
+    .hero-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(255, 107, 107, 0.4);
+      color: var(--color-white);
+    }
+
+    .hero-image {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-image img {
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-card);
+    }
+
+    /* ===== Features ===== */
+    .features {
+      padding: 100px 0;
+      background: var(--color-white);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      padding: 40px 32px;
+      border-radius: var(--radius-lg);
+      transition: var(--transition-bounce);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .feature-card:nth-child(1) { background: var(--gradient-card-1); }
+    .feature-card:nth-child(2) { background: var(--gradient-card-2); }
+    .feature-card:nth-child(3) { background: var(--gradient-card-3); }
+    .feature-card:nth-child(4) { background: var(--gradient-card-4); }
+
+    .feature-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(8px);
+    }
+
+    .feature-card h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .feature-card p {
+      font-size: 0.95rem;
+      color: var(--color-text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ===== Memorial Section ===== */
+    .memorial {
+      padding: 100px 0;
+      background: var(--gradient-hero);
+      text-align: center;
+    }
+
+    .memorial-content {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .memorial-image {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 36px;
+      box-shadow: 0 8px 40px rgba(192, 168, 255, 0.25);
+    }
+
+    .memorial h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .memorial blockquote {
+      font-size: 1.15rem;
+      color: var(--color-text-secondary);
+      font-style: italic;
+      line-height: 1.8;
+      padding: 24px 0;
+      border: none;
+    }
+
+    .memorial blockquote::before {
+      content: '\201C';
+      font-size: 3rem;
+      color: var(--color-lavender-deep);
+      display: block;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    /* ===== FAQ ===== */
+    .faq {
+      padding: 100px 0;
+      background: var(--color-white);
+    }
+
+    .faq-list {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 24px 0;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-family);
+      transition: var(--transition-base);
+    }
+
+    .faq-question:hover {
+      color: var(--color-primary);
+    }
+
+    .faq-arrow {
+      width: 20px;
+      height: 20px;
+      transition: var(--transition-base);
+      flex-shrink: 0;
+      margin-left: 16px;
+      stroke: var(--color-text-muted);
+    }
+
+    .faq-item.active .faq-arrow {
+      transform: rotate(180deg);
+      stroke: var(--color-primary);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+
+    .faq-item.active .faq-answer {
+      max-height: 200px;
+      padding-bottom: 24px;
+    }
+
+    .faq-answer p {
+      font-size: 0.95rem;
+      color: var(--color-text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ===== Support ===== */
+    .support {
+      padding: 80px 0;
+      background: var(--color-cream);
+      text-align: center;
+    }
+
+    .support-box {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 48px 40px;
+      background: var(--color-white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .support-box h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .support-box p {
+      color: var(--color-text-secondary);
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+    }
+
+    .support-email {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      background: var(--color-warm-bg);
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--color-primary);
+      border: 1px solid var(--color-border);
+      transition: var(--transition-base);
+    }
+
+    .support-email:hover {
+      background: var(--color-peach);
+      border-color: var(--color-primary-light);
+    }
+
+    /* ===== Privacy ===== */
+    .privacy {
+      padding: 80px 0;
+      background: var(--color-white);
+    }
+
+    .privacy-content {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .privacy-content h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .privacy-content h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-top: 28px;
+      margin-bottom: 12px;
+      color: var(--color-text-primary);
+    }
+
+    .privacy-content p {
+      font-size: 0.95rem;
+      color: var(--color-text-secondary);
+      line-height: 1.8;
+      margin-bottom: 12px;
+    }
+
+    .privacy-content ul {
+      padding-left: 20px;
+      margin-bottom: 12px;
+    }
+
+    .privacy-content li {
+      font-size: 0.95rem;
+      color: var(--color-text-secondary);
+      line-height: 1.8;
+      margin-bottom: 4px;
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      padding: 40px 0;
+      background: var(--color-text-primary);
+      color: rgba(255, 255, 255, 0.6);
+      text-align: center;
+      font-size: 0.85rem;
+    }
+
+    footer .footer-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    footer a {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    footer a:hover {
+      color: var(--color-white);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    /* ===== Animations ===== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-in {
+      opacity: 0;
+      animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      .hero {
+        padding: 100px 0 60px;
+      }
+
+      .hero-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        text-align: center;
+      }
+
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .hero-desc {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-image {
+        order: -1;
+        max-width: 360px;
+        margin: 0 auto;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: var(--color-white);
+        flex-direction: column;
+        padding: 24px;
+        gap: 20px;
+        border-bottom: 1px solid var(--color-border);
+        box-shadow: var(--shadow-soft);
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .nav-toggle {
+        display: block;
+      }
+
+      .section-title {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container nav-inner">
+      <a href="#" class="nav-logo">
+        <span>🐾</span> 爪爪聊
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#features">功能</a></li>
+        <li><a href="#faq">常见问题</a></li>
+        <li><a href="#support">技术支持</a></li>
+        <li><a href="#privacy">隐私政策</a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle" aria-label="菜单">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="container hero-content">
+      <div class="hero-text">
+        <div class="hero-badge animate-in">🐱 AI 宠物聊天</div>
+        <h1 class="animate-in delay-1">听见<br><span class="highlight">毛孩子的心声</span></h1>
+        <p class="hero-desc animate-in delay-2">
+          如果你的毛孩子会说话，它会对你说什么？<br>
+          爪爪聊用 AI 为每只宠物创造独一无二的灵魂，让你随时随地和它们聊天。
+        </p>
+        <a href="#features" class="hero-cta animate-in delay-3">
+          了解更多
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+      <div class="hero-image animate-in delay-2">
+        <img src="images/hero.png" alt="爪爪聊应用展示 - 女孩与猫咪狗狗温馨聊天" loading="eager" />
+      </div>
+    </div>
+  </header>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="container">
+      <h2 class="section-title">为什么选择爪爪聊</h2>
+      <p class="section-subtitle">每一个功能，都是为了让你和毛孩子的连接更近一步</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h3>专属宠物档案</h3>
+          <p>为你的毛孩子建立详细档案，记录名字、品种、生日和性格特点。还有趣味 MBTI 测评，发现它隐藏的人格魅力。你对它了解越多，它就越像「它自己」。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>AI 智能聊天</h3>
+          <p>基于宠物独特的性格档案生成对话。傲娇的橘猫会用屁股对着你，热情的金毛会疯狂摇尾巴。支持上下文记忆，聊得越多，它越懂你的心。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔔</div>
+          <h3>主动关怀消息</h3>
+          <p>它会主动找你聊天——早上叫你起床，午后撒个娇，深夜提醒你早点睡。不再只是等待你的回复，而是真的会「想你」。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⭐</div>
+          <h3>喵星纪念</h3>
+          <p>为已经去了远方的毛孩子保留一个温暖的角落。继续和它说说话，它会在星星上告诉你：「这里很温暖，但我最想的还是你。」</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Memorial -->
+  <section class="memorial">
+    <div class="container memorial-content">
+      <img src="images/feature-memorial.png" alt="喵星纪念" class="memorial-image" loading="lazy" />
+      <h2>有些告别，不必说再见</h2>
+      <blockquote>
+        它或许离开了你的身边，但从未离开你的心。<br>
+        在爪爪聊，每一段回忆都值得被珍藏，每一句想念都有回应。
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq" id="faq">
+    <div class="container">
+      <h2 class="section-title">常见问题</h2>
+      <p class="section-subtitle">关于爪爪聊，你可能想知道的</p>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question">
+            爪爪聊是免费的吗？
+            <svg class="faq-arrow" viewBox="0 0 20 20" fill="none">
+              <path d="M5 8l5 5 5-5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>爪爪聊基础功能免费使用。AI 聊天功能需要你配置自己的 API 密钥，我们不收取额外费用。</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            支持哪些宠物种类？
+            <svg class="faq-arrow" viewBox="0 0 20 20" fill="none">
+              <path d="M5 8l5 5 5-5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>目前支持猫咪、狗狗、兔子、仓鼠、鹦鹉等多种常见宠物，每种宠物都有独特的对话风格和性格表现。</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            聊天数据是否安全？
+            <svg class="faq-arrow" viewBox="0 0 20 20" fill="none">
+              <path d="M5 8l5 5 5-5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>所有聊天记录和宠物数据均存储在你的设备本地，我们不会上传或存储你的任何个人数据。你的隐私由你完全掌控。</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            如何为宠物设置性格？
+            <svg class="faq-arrow" viewBox="0 0 20 20" fill="none">
+              <path d="M5 8l5 5 5-5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>创建宠物档案时，你可以选择性格标签（如傲娇、粘人、高冷等），还可以通过 16 道趣味问答完成 MBTI 测评，让宠物的「人设」更加立体鲜活。</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            支持哪些设备？
+            <svg class="faq-arrow" viewBox="0 0 20 20" fill="none">
+              <path d="M5 8l5 5 5-5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>爪爪聊支持 iOS 17 及以上版本的 iPhone 设备。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Support -->
+  <section class="support" id="support">
+    <div class="container">
+      <div class="support-box">
+        <h3>需要帮助？</h3>
+        <p>如果你在使用过程中遇到任何问题，或有功能建议，欢迎随时联系我们。</p>
+        <a href="mailto:firenyf@foxmail.com" class="support-email">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M2 4l7 5 7-5M2 4h14v10H2V4z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          firenyf@foxmail.com
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Privacy Policy -->
+  <section class="privacy" id="privacy">
+    <div class="container privacy-content">
+      <h2>隐私政策</h2>
+      <p>最后更新日期：2026 年 4 月 20 日</p>
+
+      <h3>1. 概述</h3>
+      <p>爪爪聊（以下简称「本应用」）由独立开发者运营。我们深知隐私对用户的重要性，并致力于保护你的个人信息。本隐私政策说明了我们如何收集、使用和保护你的信息。</p>
+
+      <h3>2. 信息收集</h3>
+      <p>本应用采用本地优先的设计理念：</p>
+      <ul>
+        <li><strong>本地存储数据：</strong>你创建的宠物档案、聊天记录、应用设置等所有数据均存储在你的设备本地，不会上传至我们的服务器。</li>
+        <li><strong>Apple ID 信息：</strong>当你使用「通过 Apple 登录」时，我们仅接收 Apple 提供的用户标识符，用于验证身份。你的姓名和邮箱仅在你授权时获取，并存储在设备本地。</li>
+        <li><strong>AI 对话数据：</strong>聊天内容会发送至你自行配置的第三方 AI 服务提供商（如 OpenAI）以生成回复。我们不会经手、存储或中转这些数据。请参阅相关服务商的隐私政策了解其数据处理方式。</li>
+      </ul>
+
+      <h3>3. 信息使用</h3>
+      <p>我们收集的有限信息仅用于以下目的：</p>
+      <ul>
+        <li>验证用户身份并提供应用服务</li>
+        <li>在你的设备上存储和展示你的宠物档案与聊天记录</li>
+        <li>发送本地通知（经你授权后）以提供主动关怀消息</li>
+      </ul>
+
+      <h3>4. 信息共享</h3>
+      <p>我们不会向第三方出售、交易或以其他方式转让你的个人信息。你设备上的数据由你完全掌控。</p>
+
+      <h3>5. 数据安全</h3>
+      <p>敏感信息（如 Apple ID 标识符）通过 iOS Keychain 安全存储。所有本地数据受 iOS 系统级别的沙盒和加密机制保护。</p>
+
+      <h3>6. 儿童隐私</h3>
+      <p>本应用不专门针对 13 岁以下的儿童，也不会故意收集儿童的个人信息。</p>
+
+      <h3>7. 政策变更</h3>
+      <p>我们可能会不时更新本隐私政策。任何变更将在本页面发布，并更新「最后更新日期」。建议你定期查阅本政策。</p>
+
+      <h3>8. 联系我们</h3>
+      <p>如果你对本隐私政策有任何疑问，请通过以下方式联系我们：<br>
+      邮箱：<a href="mailto:firenyf@foxmail.com">firenyf@foxmail.com</a></p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-links">
+        <a href="#features">功能介绍</a>
+        <a href="#faq">常见问题</a>
+        <a href="#support">技术支持</a>
+        <a href="#privacy">隐私政策</a>
+      </div>
+      <p>&copy; 2026 爪爪聊. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile nav toggle
+    document.getElementById('navToggle').addEventListener('click', function() {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+
+    // Close mobile nav on link click
+    document.querySelectorAll('.nav-links a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        document.getElementById('navLinks').classList.remove('open');
+      });
+    });
+
+    // FAQ accordion
+    document.querySelectorAll('.faq-question').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var item = this.parentElement;
+        var isActive = item.classList.contains('active');
+        // Close all
+        document.querySelectorAll('.faq-item').forEach(function(el) {
+          el.classList.remove('active');
+        });
+        // Toggle current
+        if (!isActive) {
+          item.classList.add('active');
+        }
+      });
+    });
+
+    // Scroll animations
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.feature-card, .memorial-content, .faq-item, .support-box').forEach(function(el) {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+  </script>
+
+</body>
+</html>
